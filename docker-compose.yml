@@ -1,0 +1,47 @@
+version: '2.2'
+services:
+  mongodb:
+    restart: always
+    build: mongodb
+    image: zucchinidev/mongodb
+    container_name: mongodb_golang
+    volumes:
+    - /var/lib/mongodb:/data/db
+    ports:
+    - "27017:27017"
+    networks:
+      golang:
+        aliases:
+        - mongodb
+    command: "--storageEngine wiredTiger"
+    logging:
+      options:
+        tag: "{{.DaemonName}}/mongodb"
+
+  nsqlookupd:
+    image: nsqio/nsq
+    command: /nsqlookupd
+    ports:
+    - "4160:4160" # connect with nsqd
+    - "4161:4161" # connect with nsqadmin
+
+  nsqd:
+    image: nsqio/nsq
+    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160
+    depends_on:
+    - nsqlookupd
+    ports:
+    - "4150:4150"
+    - "4151:4151"
+
+  nsqadmin:
+    image: nsqio/nsq
+    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+    depends_on:
+    - nsqlookupd
+    ports:
+    - "4171:4171"
+
+networks:
+  golang:
+    external: true
