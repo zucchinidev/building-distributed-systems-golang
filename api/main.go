@@ -2,12 +2,30 @@ package main
 
 import (
 	"context"
+	"flag"
 	"gopkg.in/mgo.v2"
+	"log"
 	"net/http"
 )
 
 func main() {
+	var (
+		addr  = flag.String("addr", ":8080", "endpoint address")
+		mongo = flag.String("mongo", "localhost", "mongodb address")
+	)
+	log.Println("Dialign mongodb", *mongo)
+	db, err := mgo.Dial(*mongo)
+	if err != nil {
+		log.Fatalln("failed to connect to mongodb: ", err)
+	}
+	defer db.Close()
 
+	server := &Server{db: db}
+	mux := http.NewServeMux()
+	mux.HandleFunc("/polls/", withCORS(withAPIKey(server.handlePolls)))
+	log.Println("Starting web server on ", *addr)
+	http.ListenAndServe(*addr, mux)
+	log.Println("Stopping...")
 }
 
 type contextKey struct {
@@ -44,8 +62,4 @@ func withCORS(fn http.HandlerFunc) http.HandlerFunc {
 
 func isValidAPIKey(key string) bool {
 	return key == "abc123"
-}
-
-type Server struct {
-	db *mgo.Session
 }
