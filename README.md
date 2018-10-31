@@ -6,4 +6,4 @@ The system I will build in this repository will prepare us for a future where al
 
 The ideas discussed here are directly applicable to any system that needs true-scale capabilities.
 
-![Basic overview of the system we are going to build](./doc/distributed-system.png)
+![Basic overview of the system we are going to build](./docs/distributed-system.png)
