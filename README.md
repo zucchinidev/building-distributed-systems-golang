@@ -70,6 +70,6 @@ Wait for a few seconds and enjoy the UI updates in real time, showing real-time 
 
 
 # TODO
-Improve frontend system.
-Add Vuejs dashboard
-Create SPA.
+* Improve frontend system.
+* Add Vuejs dashboard
+* Create SPA.
