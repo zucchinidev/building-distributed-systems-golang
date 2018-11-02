@@ -46,14 +46,14 @@ func main() {
 	pollData := db.DB("ballots").C("polls")
 
 	log.Println("Connecting to nsq...")
-	q, err := nsq.NewConsumer("votes", "counter", nsq.NewConfig())
+	consumer, err := nsq.NewConsumer("votes", "counter", nsq.NewConfig())
 	if err != nil {
 		fmt.Println("error when we are creating a new consumer")
 		fatal(err)
 		return
 	}
 
-	q.AddHandler(nsq.HandlerFunc(func(m *nsq.Message) error {
+	consumer.AddHandler(nsq.HandlerFunc(func(m *nsq.Message) error {
 		countsLock.Lock()
 		defer countsLock.Unlock()
 
@@ -65,7 +65,7 @@ func main() {
 		return nil
 	}))
 
-	if err := q.ConnectToNSQLookupd("localhost:4161"); err != nil {
+	if err := consumer.ConnectToNSQLookupd("localhost:4161"); err != nil {
 		fmt.Println("error when we connect to nsql lookupd")
 		fatal(err)
 		return
@@ -79,8 +79,8 @@ func main() {
 		case <-ticker.C:
 			doCount(&countsLock, &counts, pollData)
 		case <-termChan:
-			q.Stop()
-		case <-q.StopChan:
+			consumer.Stop()
+		case <-consumer.StopChan:
 			// finished
 			return
 		}
