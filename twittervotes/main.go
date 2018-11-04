@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/bitly/go-nsq"
+	"github.com/joeshaw/envdecode"
 	"gopkg.in/mgo.v2"
 	"log"
 	"os"
@@ -13,6 +14,31 @@ import (
 )
 
 var db *mgo.Session
+
+var config struct {
+	MongoService        string `env:"BDSG_MONGO_SERVICE,required"`
+	MongoDBName         string `env:"BDSG_MONGO_DB_NAME,required"`
+	MongoCollectionName string `env:"BDSG_MONGO_COLLECTION_NAME,required"`
+	NSQDService         string `env:"BDSG_NSQD_SERVICE,required"`
+	TwitterApiUrl       string `env:"BDSG_TWITTER_API_URL,required"`
+}
+
+var twitterConfiguration struct {
+	ConsumerKey    string `env:"BDSG_TWITTER_KEY,required"`
+	ConsumerSecret string `env:"BDSG_TWITTER_SECRET,required"`
+	AccessToken    string `env:"BDSG_TWITTER_ACCESSTOKEN,required"`
+	AccessSecret   string `env:"BDSG_TWITTER_ACCESSSECRET,required"`
+}
+
+func init() {
+	if err := envdecode.Decode(&config); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := envdecode.Decode(&twitterConfiguration); err != nil {
+		log.Fatal(err)
+	}
+}
 
 type poll struct {
 	Options []string
@@ -61,7 +87,7 @@ func main() {
 func dialdb() error {
 	var err error
 	log.Println("dialing mongodb: localhost")
-	db, err = mgo.Dial("mongodb")
+	db, err = mgo.Dial(config.MongoService)
 	return err
 }
 
@@ -72,7 +98,7 @@ func closedb() {
 
 func loadOptions() ([]string, error) {
 	var options []string
-	iterator := db.DB("ballots").C("polls").Find(nil).Iter()
+	iterator := db.DB(config.MongoDBName).C(config.MongoCollectionName).Find(nil).Iter()
 	var p poll
 	for iterator.Next(&p) {
 		options = append(options, p.Options...)
@@ -83,7 +109,7 @@ func loadOptions() ([]string, error) {
 
 func publishVotes(votes <-chan string) <-chan struct{} {
 	stopChan := make(chan struct{}, 1)
-	pub, err := nsq.NewProducer("nsqd:4150", nsq.NewConfig())
+	pub, err := nsq.NewProducer(config.NSQDService, nsq.NewConfig())
 	if err != nil {
 		fmt.Println("Error when create a new producer: ", err)
 		panic("Error when create a producer")

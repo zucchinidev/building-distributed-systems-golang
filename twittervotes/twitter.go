@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"github.com/garyburd/go-oauth/oauth"
-	"github.com/joeshaw/envdecode"
 	"io"
 	"log"
 	"net"
@@ -53,27 +52,17 @@ func closeConn() {
 }
 
 func setupTwitterAuth() {
-	var ts struct {
-		ConsumerKey    string `env:"SP_TWITTER_KEY,required"`
-		ConsumerSecret string `env:"SP_TWITTER_SECRET,required"`
-		AccessToken    string `env:"SP_TWITTER_ACCESSTOKEN,required"`
-		AccessSecret   string `env:"SP_TWITTER_ACCESSSECRET,required"`
-	}
-
-	if err := envdecode.Decode(&ts); err != nil {
-		log.Fatal(err)
-	}
 
 	creds = &oauth.Credentials{
-		Token:  ts.AccessToken,
-		Secret: ts.AccessSecret,
+		Token:  twitterConfiguration.AccessToken,
+		Secret: twitterConfiguration.AccessSecret,
 	}
 
 	authClient = &oauth.Client{
 		Credentials: struct {
 			Token  string
 			Secret string
-		}{Token: ts.ConsumerKey, Secret: ts.ConsumerSecret},
+		}{Token: twitterConfiguration.ConsumerKey, Secret: twitterConfiguration.ConsumerSecret},
 	}
 
 }
@@ -103,7 +92,7 @@ func readFromTwitter(votes chan<- string) {
 		return
 	}
 
-	u, err := url.Parse("https://stream.twitter.com/1.1/statuses/filter.json")
+	u, err := url.Parse(config.TwitterApiUrl)
 
 	if err != nil {
 		log.Println("creating filter request failed:", err)

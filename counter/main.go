@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/bitly/go-nsq"
+	"github.com/joeshaw/envdecode"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"log"
@@ -17,6 +18,21 @@ import (
 const updateDuration = 1 * time.Second
 
 var fatalErr error
+
+var config struct {
+	Topic               string `env:"BDSG_VOTES_CONSUMER_TOPIC,required"`
+	Channel             string `env:"BDSG_VOTES_CONSUMER_CHANNEL,required"`
+	MongoService        string `env:"BDSG_MONGO_SERVICE,required"`
+	NsqlookupdService   string `env:"BDSG_NSQLOOKUPD_SERVICE,required"`
+	MongoDBName         string `env:"BDSG_MONGO_DB_NAME,required"`
+	MongoCollectionName string `env:"BDSG_MONGO_COLLECTION_NAME,required"`
+}
+
+func init() {
+	if err := envdecode.Decode(&config); err != nil {
+		log.Fatal(err)
+	}
+}
 
 func fatal(e error) {
 	fmt.Println(e)
@@ -34,7 +50,7 @@ func main() {
 	}()
 
 	log.Println("Connecting to database...")
-	db, err := mgo.Dial("mongodb")
+	db, err := mgo.Dial(config.MongoService)
 	if err != nil {
 		fatal(err)
 		return
@@ -43,10 +59,10 @@ func main() {
 		log.Println("Closing database connection...")
 		db.Close()
 	}()
-	pollData := db.DB("ballots").C("polls")
+	pollData := db.DB(config.MongoDBName).C(config.MongoCollectionName)
 
 	log.Println("Connecting to nsq...")
-	consumer, err := nsq.NewConsumer("votes", "counter", nsq.NewConfig())
+	consumer, err := nsq.NewConsumer(config.Topic, config.Channel, nsq.NewConfig())
 	if err != nil {
 		fmt.Println("error when we are creating a new consumer")
 		fatal(err)
@@ -65,7 +81,7 @@ func main() {
 		return nil
 	}))
 
-	if err := consumer.ConnectToNSQLookupd("nsqlookupd:4161"); err != nil {
+	if err := consumer.ConnectToNSQLookupd(config.NsqlookupdService); err != nil {
 		fmt.Println("error when we connect to nsql lookupd")
 		fatal(err)
 		return

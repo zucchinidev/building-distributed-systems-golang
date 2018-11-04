@@ -46,7 +46,7 @@ func (s *Server) handlePollsGet(writer http.ResponseWriter, request *http.Reques
 	var query *mgo.Query
 	var result []*poll
 
-	collection := session.DB("ballots").C("polls")
+	collection := session.DB(config.MongoDBName).C(config.MongoCollectionName)
 	path := NewPath(request.URL.Path)
 
 	if path.HasID() {
@@ -68,7 +68,7 @@ func (s *Server) handlePollsPost(writer http.ResponseWriter, request *http.Reque
 	defer session.Close()
 	var p poll
 
-	collection := session.DB("ballots").C("polls")
+	collection := session.DB(config.MongoDBName).C(config.MongoCollectionName)
 
 	if err := decodeBody(request, &p); err != nil {
 		respondErr(writer, request, http.StatusBadRequest, "failed to read poll from request", err)
@@ -92,7 +92,7 @@ func (s *Server) handlePollsPost(writer http.ResponseWriter, request *http.Reque
 func (s *Server) handlePollsDelete(writer http.ResponseWriter, request *http.Request) {
 	session := s.db.Copy()
 	defer session.Close()
-	collection := session.DB("ballots").C("polls")
+	collection := session.DB(config.MongoDBName).C(config.MongoCollectionName)
 	p := NewPath(request.URL.Path)
 	if !p.HasID() {
 		respondErr(writer, request, http.StatusMethodNotAllowed, "Cannot delete all polls.")

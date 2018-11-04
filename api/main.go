@@ -2,19 +2,29 @@ package main
 
 import (
 	"context"
-	"flag"
+	"github.com/joeshaw/envdecode"
 	"gopkg.in/mgo.v2"
 	"log"
 	"net/http"
 )
 
+var config struct {
+	MongoDBName         string `env:"BDSG_MONGO_DB_NAME,required"`
+	MongoCollectionName string `env:"BDSG_MONGO_COLLECTION_NAME,required"`
+	Addr                string `env:"BDSG_API_ADDR,required"`
+	MongoService        string `env:"BDSG_MONGO_SERVICE,required"`
+}
+
+func init() {
+	if err := envdecode.Decode(&config); err != nil {
+		log.Fatal(err)
+	}
+}
+
 func main() {
-	var (
-		addr  = flag.String("addr", ":8080", "endpoint address")
-		mongo = flag.String("mongo", "mongodb", "mongodb address")
-	)
-	log.Println("Dialign mongodb", *mongo)
-	db, err := mgo.Dial(*mongo)
+
+	log.Println("Dialign mongodb", config.MongoService)
+	db, err := mgo.Dial(config.MongoService)
 	if err != nil {
 		log.Fatalln("failed to connect to mongodb: ", err)
 	}
@@ -23,8 +33,8 @@ func main() {
 	server := &Server{db: db}
 	mux := http.NewServeMux()
 	mux.HandleFunc("/polls/", withCORS(withAPIKey(server.handlePolls)))
-	log.Println("Starting web server on ", *addr)
-	http.ListenAndServe(*addr, mux)
+	log.Println("Starting web server on ", config.Addr)
+	http.ListenAndServe(config.Addr, mux)
 	log.Println("Stopping...")
 }
 

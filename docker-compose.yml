@@ -56,6 +56,9 @@ services:
         - nsqadmin
 
   counter:
+    extends:
+      file: docker-compose-common.yml
+      service: common_service
     build:
       context: ./counter
       args:
@@ -87,6 +90,9 @@ services:
         - twittervotes
 
   api:
+    extends:
+      file: docker-compose-common.yml
+      service: common_service
     build:
       context: ./api
       args:
@@ -102,6 +108,9 @@ services:
         aliases:
         - api
   web:
+    extends:
+      file: docker-compose-common.yml
+      service: common_service
     build:
       context: ./web
       args:

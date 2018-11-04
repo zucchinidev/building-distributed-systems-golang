@@ -1,17 +1,19 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
-	var addr = flag.String("addr", ":8081", "website address")
-	flag.Parse()
+	webServerAddr := os.Getenv("BDSG_WEB_SERVER_ADDR")
+	if webServerAddr == "" {
+		log.Fatal("BDSG_WEB_SERVER_ADDR environment variable is mandatory")
+	}
 
 	mux := http.NewServeMux()
 	mux.Handle("/", http.StripPrefix("/", http.FileServer(http.Dir("public"))))
-	log.Println("Serving website at: ", *addr)
-	http.ListenAndServe(*addr, mux)
+	log.Println("Serving website at: ", webServerAddr)
+	http.ListenAndServe(webServerAddr, mux)
 }
