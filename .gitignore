@@ -1,2 +1,10 @@
 .idea
-setup.sh
+env/development.env
+counter/tmp
+twittervotes/tmp
+api/tmp
+web/tmp
+counter/counter
+twittervotes/twittervotes
+api/api
+web/web
