@@ -1,0 +1,6 @@
+version: '2.2'
+services:
+  common_service:
+    restart: on-failure
+    env_file:
+    - env/development.env
