@@ -47,6 +47,11 @@ Or why not, a survey about your favorite programming languages
 ![Programming languages poll](./docs/poll-example-programming-languages.png)
 
 
+If you want to manage NSQ messaging platform, you can open your browser and head to http://localhost:4171
+
+
+![NSQ admin area](./docs/nsq-admin.png)
+
 
 # TODO
 * Improve frontend system.
