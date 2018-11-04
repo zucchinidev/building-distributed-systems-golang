@@ -38,7 +38,14 @@ These are common enough words that we are likely to see some relevant activity o
 Once you have created your poll, you will be taken to the view page where you will start to see the results coming in.
 Wait for a few seconds and enjoy the UI updates in real time, showing real-time results:
 
-![Basic overview of the system we are going to build](./docs/poll-example.png)
+![Example of poll](./docs/poll-example.png)
+
+
+
+Or why not, a survey about your favorite programming languages
+
+![Programming languages poll](./docs/poll-example-programming-languages.png)
+
 
 
 # TODO
