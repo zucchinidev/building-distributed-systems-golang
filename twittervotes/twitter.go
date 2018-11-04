@@ -136,7 +136,6 @@ func readFromTwitter(votes chan<- string) {
 
 		for _, option := range options {
 			if strings.Contains(strings.ToLower(t.Text), strings.ToLower(option)) {
-				log.Println("vote: ", option)
 				votes <- option
 			}
 		}
