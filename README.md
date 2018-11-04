@@ -21,6 +21,15 @@ The ideas discussed here are directly applicable to any system that needs true-s
 $ docker-compose up
 ```
 
+
+> The docker images building here, allows you to build a dev container that
+*will reload code changes you make locally (without rebuilding the container)*
+and a production container that serves the binary build. This is done using shared volumes,
+[pilu/fresh](https://github.com/pilu/fresh), and build arguments.
+To build a production image, you need to establish APP_ENV environment variable with the value "production"
+
+
+
 Now that everything is running, open a browser and head to http://localhost:8081/.
 Using the user interface, create a poll called Moods and input the options as happy,sad,fail,success.
 These are common enough words that we are likely to see some relevant activity on Twitter.
