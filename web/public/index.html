@@ -16,29 +16,6 @@
     </div>
     <div class="col-md-4"></div>
 </div>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script>
-    $(function () {
-        var update = function () {
-            $.get("http://localhost:8080/polls/?key=abc123", null, null, "json")
-                    .done(function (polls) {
-                                $("#polls").empty();
-                                for (var p in polls) {
-                                    var poll = polls[p];
-                                    $("#polls").append(
-                                            $("<li>").append(
-                                                    $("<a>")
-                                                            .attr("href", "view.html?poll=polls/" + poll.id)
-                                                            .text(poll.title)
-                                            )
-                                    )
-                                }
-                            }
-                    );
-            window.setTimeout(update, 10000);
-        }
-        update();
-    });
-</script>
+<script src="js/index.js"></script>
 </body>
 </html>
