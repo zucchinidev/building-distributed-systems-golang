@@ -9,53 +9,15 @@ The ideas discussed here are directly applicable to any system that needs true-s
 ![Basic overview of the system we are going to build](./docs/distributed-system.png)
 
 # Run app
-```sh
-$ cp setup_dist.sh setup.sh
-```
 
-Add your twitter application keys in the setup.sh file and grant execution privileges
+* Remove the suffix _dist from the development_dist.env file inside of the env folder.
 
-```sh
-$ chmod +u setup.sh
-```
+* Add your twitter application keys in the env/development.env file
 
-Start the MongoDB server and nslookup and nsqd daemons.
+* Start the MongoDB server and the nslookup and nsqd daemons. Also the counters, twittervotes, api and the web server:
 
 ```sh
 $ docker-compose up
-```
-
-Navigate to the counter folder and build and run it:
-
-```sh
-$ cd counter
-$ go build -o counter
-$ ./counter
-```
-
-Navigate to the twittervotes folder and build and run it. Ensure that you have the appropriate environment variables set; otherwise, you will see errors when you run the program:
-
-```sh
-$ cd ../twittervotes
-$ go build -o twittervotes
-$ ./twittervotes
-```
-
-Navigate to the api folder and build and run it:
-
-```sh
-cd ../api
-go build -o api
-./api
-```
-
-
-Navigate to the web folder and build and run it:
-
-```sh
-cd ../web
-go build -o web
-./web
 ```
 
 Now that everything is running, open a browser and head to http://localhost:8081/.
@@ -73,3 +35,4 @@ Wait for a few seconds and enjoy the UI updates in real time, showing real-time 
 * Improve frontend system.
 * Add Vuejs dashboard
 * Create SPA.
+* Use Socket
