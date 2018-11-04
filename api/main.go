@@ -11,7 +11,7 @@ import (
 func main() {
 	var (
 		addr  = flag.String("addr", ":8080", "endpoint address")
-		mongo = flag.String("mongo", "localhost", "mongodb address")
+		mongo = flag.String("mongo", "mongodb", "mongodb address")
 	)
 	log.Println("Dialign mongodb", *mongo)
 	db, err := mgo.Dial(*mongo)
