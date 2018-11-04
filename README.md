@@ -1,4 +1,5 @@
-# Twittervotes
+# Building Distributed Systems
+
 Building Distributed Systems and Workign with Flexible Data.
 
 
@@ -14,7 +15,7 @@ The ideas discussed here are directly applicable to any system that needs true-s
 
 * Add your twitter application keys in the env/development.env file
 
-* Start the MongoDB server and the nslookup and nsqd daemons. Also the counters, twittervotes, api and the web server:
+* Start the MongoDB server, the nslookup and nsqd daemons. Also the counters, twittervotes, api and the web server:
 
 ```sh
 $ docker-compose up
