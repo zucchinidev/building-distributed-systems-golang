@@ -15,6 +15,12 @@ The ideas discussed here are directly applicable to any system that needs true-s
 
 * Add your twitter application keys in the env/development.env file
 
+* Create docker network
+
+```sh
+$ docker network create golang
+```
+
 * Start the MongoDB server, the nslookup and nsqd daemons. Also the counters, twittervotes, api and the web server:
 
 ```sh
