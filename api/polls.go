@@ -31,7 +31,8 @@ func (s *Server) handlePolls(writer http.ResponseWriter, request *http.Request) 
 		return
 
 	case "OPTIONS":
-		writer.Header().Set("Access-Control-Allow-Methods", "DELETE")
+		writer.Header().Set("Access-Control-Allow-Methods", "POST, DELETE")
+		writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		respond(writer, request, http.StatusOK, nil)
 		return
 	}
