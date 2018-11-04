@@ -34,7 +34,7 @@ func main() {
 	}()
 
 	log.Println("Connecting to database...")
-	db, err := mgo.Dial("localhost")
+	db, err := mgo.Dial("mongodb")
 	if err != nil {
 		fatal(err)
 		return
@@ -65,7 +65,7 @@ func main() {
 		return nil
 	}))
 
-	if err := consumer.ConnectToNSQLookupd("localhost:4161"); err != nil {
+	if err := consumer.ConnectToNSQLookupd("nsqlookupd:4161"); err != nil {
 		fmt.Println("error when we connect to nsql lookupd")
 		fatal(err)
 		return
@@ -95,8 +95,6 @@ func doCount(countsLock *sync.Mutex, counts *map[string]int, pollData *mgo.Colle
 		return
 	}
 
-	log.Println("Updating database...")
-	log.Println(*counts)
 	ok := true
 
 	for option, count := range *counts {
@@ -109,7 +107,6 @@ func doCount(countsLock *sync.Mutex, counts *map[string]int, pollData *mgo.Colle
 	}
 
 	if ok {
-		log.Println("Finished updating database...")
 		*counts = nil
 	}
 }
