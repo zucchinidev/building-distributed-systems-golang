@@ -43,8 +43,8 @@
     const $title = $('[data-field="title"]')
     fetch(url).then(response => response.json()).then(polls => {
       const poll = polls[0]
-      $options.textContent = poll.title
-      $title.innerHTML = ''
+      $title.textContent = poll.title
+      $options.innerHTML = ''
       poll.options.forEach(option => {
         const value = poll.results && poll.results[option] || 0
         renderResultItems($options, option, value)
